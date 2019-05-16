@@ -27,22 +27,23 @@ def structural_loss(y_true,y_pred):
     zero = tf.constant(-1, dtype=tf.float32)
     # st_loss = zero
     b = K.not_equal(y_true, zero)
-    b = K.cast(b, dtype='float32')
-    nb = tf.reduce_sum(b)
+    fb = K.cast(b, dtype='float32')
+    nb = tf.reduce_sum(fb)
     c  = K.not_equal(y_pred, zero)
     # cn = K.equal(y_pred, zero)
-    c = K.cast(c, dtype='float32')
-    nc = tf.reduce_sum(c)
+    fc = K.cast(c, dtype='float32')
+    nc = tf.reduce_sum(fc)
+
     d = tf.logical_or(b,c)
-    d = K.cast(d, dtype='float32')
-    nd = tf.reduce_sum(d)
+    fd = K.cast(d, dtype='float32')
+    nd = tf.reduce_sum(fd)
 
     e = tf.logical_and(b, c)
-    e = K.cast(d, dtype='float32')
-    ne = tf.reduce_sum(e)
+    fe = K.cast(e, dtype='float32')
+    ne = tf.reduce_sum(fe)
 
-    term1 = tf.divide(nd/(nb+1e-08))
-    term2 = tf.divide(nb/(ne+1e-08))
+    term1 = tf.divide(nd,(nb+1e-08))
+    term2 = tf.divide(nb,(ne+1e-08))
 
 
     st_loss = tf.reduce_mean(tf.add(term1,term2))
@@ -376,12 +377,12 @@ class Pix2Pix():
         for i in range(r):
             for j in range(c):
                 if cnt < r:
-                    axs[i, j].imshow(gen_imgs[cnt,])
+                    axs[i, j].imshow(np.squeeze(gen_imgs[cnt,]))
                 axs[i,j].imshow(cv2.threshold(np.squeeze(gen_imgs[cnt,]),0.,255.,cv2.THRESH_BINARY)[1])
                 axs[i, j].set_title(titles[i])
                 axs[i,j].axis('off')
                 cnt += 1
-        fig.savefig("Output2/%d_%d.png" % (epoch, batch_i))
+        fig.savefig("Output3/%d_%d.png" % (epoch, batch_i))
         plt.close()
 
 
