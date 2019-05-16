@@ -71,7 +71,7 @@ def imageLoader(files1, batch_start=0, batch_size=1):
             limit = min(batch_end, L)
             # print type(files1[batch_start:limit])
             X = readImages(files1[batch_start:limit], '405_ann')
-            Y = readImagesEdge(files1[batch_start:limit], '405_imgs')
+            Y = readImagesEdge(files1[batch_start:limit], '405_imgG')
             Z = readImages(files1[batch_start:limit], '405_simp_v2')
             # batch_start += batch_size
             # batch_end += batch_size
@@ -91,7 +91,7 @@ def imageLoaderReturn(files1, batch_start=0, batch_size=1):
             # print type(files1[batch_start:limit])
             # print(files1[batch_start:limit])
             X = readImages(files1[batch_start:limit], '405_ann')
-            Y = readImagesEdge(files1[batch_start:limit], '405_imgs')
+            Y = readImagesEdge(files1[batch_start:limit], '405_imgG')
             Z = readImages(files1[batch_start:limit], '405_simp_v2')
             # batch_start += batch_size
             # batch_end += batch_size
@@ -294,7 +294,7 @@ class Pix2Pix():
         valid = np.ones((batch_size,) + self.disc_patch)
         fake = np.zeros((batch_size,) + self.disc_patch)
         file1 = os.listdir('/home/samik/Documents/P/405_ann/')
-        file2 = os.listdir('/home/samik/Documents/P/405_imgs/')
+        file2 = os.listdir('/home/samik/Documents/P/405_imgG/')
         file3 = os.listdir('/home/samik/Documents/P/405_simp_v2/')
         # self.generator.load_weights('Models/G/generator1_134_400')
         # self.discriminator.load_weights('Models/D/discriminator1_134_400')
