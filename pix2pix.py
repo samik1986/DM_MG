@@ -26,16 +26,26 @@ def structural_loss(y_true,y_pred):
     # st_loss = zero
     zero = tf.constant(-1, dtype=tf.float32)
     # st_loss = zero
-    b = K.equal(y_true, zero)
-
-    # b = K.cast(b, dtype='float32')
-    c  = K.equal(y_pred, zero)
-    cn = K.not_equal(y_pred, zero)
-    # c = K.cast(c, dtype='float32')
-    d = tf.logical_or(tf.logical_or(b,c),cn)
-
+    b = K.not_equal(y_true, zero)
+    b = K.cast(b, dtype='float32')
+    nb = tf.reduce_sum(b)
+    c  = K.not_equal(y_pred, zero)
+    # cn = K.equal(y_pred, zero)
+    c = K.cast(c, dtype='float32')
+    nc = tf.reduce_sum(c)
+    d = tf.logical_or(b,c)
     d = K.cast(d, dtype='float32')
-    st_loss = tf.reduce_mean(tf.reduce_sum(d)/655355.)
+    nd = tf.reduce_sum(d)
+
+    e = tf.logical_and(b, c)
+    e = K.cast(d, dtype='float32')
+    ne = tf.reduce_sum(e)
+
+    term1 = tf.divide(nd/(nb+1e-08))
+    term2 = tf.divide(nb/(ne+1e-08))
+
+
+    st_loss = tf.reduce_mean(tf.add(term1,term2))
     # fake_where = tf.not_equal(y_pred, zero)
     # true_where = tf.zeros(fake_where.shape)
     # # K.greater(y_pred,zero)
@@ -71,7 +81,7 @@ def imageLoader(files1, batch_start=0, batch_size=1):
             limit = min(batch_end, L)
             # print type(files1[batch_start:limit])
             X = readImages(files1[batch_start:limit], '405_ann')
-            Y = readImagesEdge(files1[batch_start:limit], '405_imgG')
+            Y = readImagesEdge(files1[batch_start:limit], '405_imgs')
             Z = readImages(files1[batch_start:limit], '405_simp_v2')
             # batch_start += batch_size
             # batch_end += batch_size
@@ -91,7 +101,7 @@ def imageLoaderReturn(files1, batch_start=0, batch_size=1):
             # print type(files1[batch_start:limit])
             # print(files1[batch_start:limit])
             X = readImages(files1[batch_start:limit], '405_ann')
-            Y = readImagesEdge(files1[batch_start:limit], '405_imgG')
+            Y = readImagesEdge(files1[batch_start:limit], '405_imgs')
             Z = readImages(files1[batch_start:limit], '405_simp_v2')
             # batch_start += batch_size
             # batch_end += batch_size
@@ -294,7 +304,7 @@ class Pix2Pix():
         valid = np.ones((batch_size,) + self.disc_patch)
         fake = np.zeros((batch_size,) + self.disc_patch)
         file1 = os.listdir('/home/samik/Documents/P/405_ann/')
-        file2 = os.listdir('/home/samik/Documents/P/405_imgG/')
+        file2 = os.listdir('/home/samik/Documents/P/405_imgs/')
         file3 = os.listdir('/home/samik/Documents/P/405_simp_v2/')
         # self.generator.load_weights('Models/G/generator1_134_400')
         # self.discriminator.load_weights('Models/D/discriminator1_134_400')
@@ -343,7 +353,7 @@ class Pix2Pix():
         # os.makedirs('Images/Output/')
         r, c = 4, 4
         file1 = os.listdir('/home/samik/Documents/P/405_ann/')
-        file2 = os.listdir('/home/samik/Documents/P/405_imgG/')
+        file2 = os.listdir('/home/samik/Documents/P/405_imgs/')
         file3 = os.listdir('/home/samik/Documents/P/405_simp_v2/')
 
         # file1 = os.listdir('/home/samik/mnt/gpu3/mnt/disk128/main/training_data/training_data/STP/P/405_ann/')
@@ -359,12 +369,14 @@ class Pix2Pix():
 
         # print(gen_imgs[3,].shape)
         # print(np.unique(cv2.threshold(np.squeeze(gen_imgs[8,]),0.,255.,cv2.THRESH_BINARY)[1]))
-        titles = ['Condition', 'Morse', 'Generated', 'Original']
+        titles = ['Input', 'Morse', 'Generated', 'Original']
         fig, axs = plt.subplots(r, c)
         # plt.show()
         cnt = 0
         for i in range(r):
             for j in range(c):
+                if cnt < r:
+                    axs[i, j].imshow(gen_imgs[cnt,])
                 axs[i,j].imshow(cv2.threshold(np.squeeze(gen_imgs[cnt,]),0.,255.,cv2.THRESH_BINARY)[1])
                 axs[i, j].set_title(titles[i])
                 axs[i,j].axis('off')
