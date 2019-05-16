@@ -343,7 +343,7 @@ class Pix2Pix():
         # os.makedirs('Images/Output/')
         r, c = 4, 4
         file1 = os.listdir('/home/samik/Documents/P/405_ann/')
-        file2 = os.listdir('/home/samik/Documents/P/405_imgs/')
+        file2 = os.listdir('/home/samik/Documents/P/405_imgG/')
         file3 = os.listdir('/home/samik/Documents/P/405_simp_v2/')
 
         # file1 = os.listdir('/home/samik/mnt/gpu3/mnt/disk128/main/training_data/training_data/STP/P/405_ann/')
